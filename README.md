@@ -37,3 +37,8 @@ the elevators operating on their own.  I was in the midst of creating the suite
 of unit tests to prove the simulations could run correctly for contrived
 scenarios of two elevators working in tandem, but I could not get these to work
 in the allotted time.
+
+## How to execute
+
+This is a standard Apache Maven project.  All the tests (both unit and end-to-end)
+can be executed with the "mvn test" command. 
