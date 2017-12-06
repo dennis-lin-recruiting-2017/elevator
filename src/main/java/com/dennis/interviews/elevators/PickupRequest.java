@@ -1,5 +1,11 @@
 package com.dennis.interviews.elevators;
 
+/**
+ * Models a person who rides an elevator.  Meant to capture statistics to perform an queuing theory analysis.
+ * 
+ * @author dennislin
+ *
+ */
 public class PickupRequest {
 	private final int startingFloor;
 	private final int targetFloor;

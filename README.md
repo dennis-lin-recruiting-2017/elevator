@@ -3,7 +3,11 @@
 ## Design approach
 Because of the requirement to time-step the simulation, I chose to implement
 this exercise as a discrete event simulation (https://en.wikipedia.org/wiki/Discrete_event_simulation).
-This also has the advantage of being extremely testable and easy to debug.  
+The intent was to eventually capture data to perform standard queuing theory
+analyses (https://en.wikipedia.org/wiki/Queueing_theory) on user wait times,
+elevator utilization, and ultimately a cost-benefit pricing model that can be used
+to tune scheduling algorithms.  From a software engineering perspective, this approach
+also has the advantage of being extremely testable and easy to debug.  
 
 A "Simulation" will consist of a list of elevators and a list of the
 aforementioned pickup requests (a pickup request is equivalent to a human rider).
