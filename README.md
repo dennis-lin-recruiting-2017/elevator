@@ -2,8 +2,8 @@
 
 ## Design approach
 Because of the requirement to time-step the simulation, I chose to implement
-this exercise as a discrete event simulation.  This also has the advantage of
-being extremely testable and easy to debug.  
+this exercise as a discrete event simulation (https://en.wikipedia.org/wiki/Discrete_event_simulation).
+This also has the advantage of being extremely testable and easy to debug.  
 
 A "Simulation" will consist of a list of elevators and a list of the
 aforementioned pickup requests (a pickup request is equivalent to a human rider).
