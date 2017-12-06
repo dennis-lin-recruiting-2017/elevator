@@ -13,6 +13,12 @@ import com.dennis.interviews.elevators.elevator.OpportunisticElevator;
 import com.dennis.interviews.elevators.pickup.AbstractPickupRequestGenerator;
 import com.dennis.interviews.elevators.pickup.RegularIntervalGenerator;
 
+/**
+ * First pass at creating a simulation.  I did not get an opportunity to re-factor out the code (please see
+ * the AbstractSimulation.java class in the same package).
+ * @author dennislin
+ *
+ */
 public class Simulation {
 	public static enum State {
 		NOT_STARTED,
