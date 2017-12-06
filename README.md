@@ -18,9 +18,9 @@ I used an optimistic/greedy version of the "first-come, first served" algorithm
 to model how most real-world elevators seem to work.  The key differences
 between my algorithm and the FCFS version are as follows:
 
-1.  While serving a request, the elevator has space, it will pick up requests
+1.  While serving a request, if the elevator has space, it will pick up requests
 that show up en route to the original destination and update its itinerary.
-2.  Once the new riders board, the elevator will update its final destionation to
+2.  Once the new riders board, the elevator will update its final destination to
 be the furthest floor of all its riders (i.e. highest destination floor for an
 ascending elevator, lowest destination floor for a descending one).
 
