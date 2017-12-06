@@ -2,16 +2,17 @@
 
 ## Design approach
 Because of the requirement to time-step the simulation, I chose to implement
-this exercise as a discrete event simulation.  Pickup requests on each floor
-are generated according to some preset distribution.  Each pickup request
-will have a timestamp associated with it to show when the request will become
-active and be ready for processing.
+this exercise as a discrete event simulation.  This also has the advantage of
+being extremely testable and easy to debug.  
 
 A "Simulation" will consist of a list of elevators and a list of the
-aforementioned pickup requests.  Time is represented as a double, were 1.0 is
-considerd to be 1.0 seconds of real world time.  The limit on the number of
-elevators and events that the simulation can simulate are bounded by CPU and
-memory. 
+aforementioned pickup requests (a pickup request is equivalent to a human rider).
+Pickup requests on each floor are generated according to some preset distribution.
+Each pickup request will have a timestamp associated with it to show when the
+request will become active and be ready for processing.
+Time is represented as a double, were 1.0 is considerd to be 1.0 seconds of
+real world time.  The limit on the number of elevators and events that the
+simulation can simulate are bounded by CPU and memory. 
 
 ## Scheduling Algorithm used:
 I used an optimistic/greedy version of the "first-come, first served" algorithm
