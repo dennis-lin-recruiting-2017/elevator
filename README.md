@@ -13,7 +13,7 @@ considerd to be 1.0 seconds of real world time.  The limit on the number of
 elevators and events that the simulation can simulate are bounded by CPU and
 memory. 
 
-## Scheduling Algorithm usedj:
+## Scheduling Algorithm used:
 I used an optimistic/greedy version of the "first-come, first served" algorithm
 to model how most real-world elevators seem to work.  The key differences
 between my algorithm and the FCFS version are as follows:
@@ -25,7 +25,8 @@ be the furthest floor of all its riders (i.e. highest destination floor for an
 ascending elevator, lowest destination floor for a descending one).
 
 I did also consider a carousel-like system imspired by the Yamanote Line in
-Tokyo, Japan (https://en.wikipedia.org/wiki/Yamanote_Line).  Thie type of line
+Tokyo, Japan (https://en.wikipedia.org/wiki/Yamanote_Line) -- it was incorrectly
+called "round robin" in my code because of time pressures.  Thie type of line
 would probably be better suited for a demand distribution that was more constant,
 whereas the optimistic/greedy FCFS version that I chose would be better suited
 for loads of a multi-modal nature (i.e. multiple rush hours overa period of time).
