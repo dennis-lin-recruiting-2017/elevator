@@ -46,6 +46,13 @@ public class Simulation {
 		}
 		
 		listPickupRequests = pickupRequests;
+		for (PickupRequest pickupRequest : listPickupRequests) {
+			if (null == mapActiveRequestsByFloor.get(pickupRequest.getStartingFloor())) {
+				mapActiveRequestsByFloor.put(pickupRequest.getStartingFloor(), new LinkedList<>());
+			}
+			
+			mapActiveRequestsByFloor.get(pickupRequest.getStartingFloor()).add(pickupRequest);
+		}
 	}
 	
 	public Simulation(final int numElevators, final List<PickupRequest> pickupRequests) {
@@ -77,70 +84,39 @@ public class Simulation {
 		
 		double newTimestamp = currentTimestamp + timeIncrement;
 		
-		//  Make all the pickup requests between "currentTimestamp" and "newTimestamp" active.
-		for (int counter = 0; counter < listPickupRequests.size(); counter++) {
-			PickupRequest pickupRequest = listPickupRequests.get(counter);
-			if (pickupRequest.getTimestamp() < newTimestamp) {
-				if (null == mapActiveRequestsByFloor.get(pickupRequest.getStartingFloor())) {
-					mapActiveRequestsByFloor.put(pickupRequest.getStartingFloor(), new LinkedList<PickupRequest>());
-				}
-				mapActiveRequestsByFloor.get(pickupRequest.getStartingFloor()).add(pickupRequest);
-			} else {
-				//  Since the list of requests is in chronological order, there is no need to process the rest of the
-				//  requests if this current request is past the newTimestamp.
-				break;
-			}
-		}
-	
-		//  If no more pickup requests to process, then continue to increment the time on the elevators.
-		if (listPickupRequests.isEmpty()) {
-			boolean allElevatorsIdle = true;
-			for (AbstractElevator elevator : listElevators) {
-				elevator.incrementTime(timeIncrement);
-				allElevatorsIdle = allElevatorsIdle && (elevator.getState() == AbstractElevator.State.IDLE);
-			}
-			
-			currentTimestamp = newTimestamp;
-			if (allElevatorsIdle) {
-				state = State.FINISHED;
-			}
-			
-			return;
-		}
-		
-		//  Now we need to schedule the pickup request.  First check to see if there are new pickup requests between now
-		//  and the next pickup request.  If not, we can safely increment the time.
-		if (newTimestamp < listPickupRequests.get(0).getTimestamp()) {
-			for (AbstractElevator elevator : listElevators) {
-				elevator.incrementTime(timeIncrement);
-			}
-			
-			currentTimestamp = newTimestamp;
-			
-			return;
-		}
-	
-		//  In order to safely schedule the next request, let's do the following:
-		//  1.  increment the time until the next pickup request
-		//  2.  schedule the pickup request
-		//  3.  increment the remainder of the time.
-		PickupRequest nextPickupRequest = listPickupRequests.remove(0);
-		double incrementBefore = nextPickupRequest.getTimestamp() - currentTimestamp;
-		double incrementAfter = timeIncrement - incrementBefore;
-		
 		//  1.  increment the time until the next pickup request
 		for (AbstractElevator elevator : listElevators) {
-		    elevator.incrementTime(incrementBefore);
+		    elevator.incrementTime(timeIncrement);
+		}
+	
+		currentTimestamp = newTimestamp;
+		
+		if (!hasPickupRequestsRemaining() && areAllElevatorsIdle()) {
+			LOG.info("Simulation ended with timestamp={}", currentTimestamp);
+			state = State.FINISHED;
+		}
+	}
+	
+	private boolean hasPickupRequestsRemaining() {
+		boolean remaining = false;
+		for (Map.Entry<Integer, List<PickupRequest>> entry : mapActiveRequestsByFloor.entrySet()) {
+			remaining = remaining || (!entry.getValue().isEmpty());
 		}
 		
-		//  2.  schedule the pickup request
-		//      Need to handle the case when an elevator is busy
-		schedulePickupRequest(nextPickupRequest);
-		
-		//  3.  increment the remainder of the time.
+		return remaining;
+	}
+	
+	private boolean areAllElevatorsIdle() {
+		boolean isIdle = true;
 		for (AbstractElevator elevator : listElevators) {
-		    elevator.incrementTime(incrementAfter);
+			isIdle = isIdle && (elevator.getState() == AbstractElevator.State.IDLE);
 		}
+		
+		return isIdle;
+	}
+	
+	public final double getCurrentTimestamp() {
+		return currentTimestamp;
 	}
 	
 	public final Map<Integer, List<PickupRequest>> getMapActiveRequestsByFloor() {

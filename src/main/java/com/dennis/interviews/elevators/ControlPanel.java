@@ -4,5 +4,5 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ControlPanel {
-	private List<AbstractElevator> listElevators = new ArrayList<>();
+    private List<AbstractElevator> listElevators = new ArrayList<>();
 }
