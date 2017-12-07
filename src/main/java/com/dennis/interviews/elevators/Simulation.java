@@ -42,7 +42,7 @@ public class Simulation {
     public Simulation(final List<AbstractElevator> elevators, final List<PickupRequest> pickupRequests) {
         for (AbstractElevator elevator : elevators) {
             elevator.setSimulation(this);
-            listElevators.addAll(elevators);
+            listElevators.add(elevator);
         }
 
         listPickupRequests = pickupRequests;
