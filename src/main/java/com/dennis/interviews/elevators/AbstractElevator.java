@@ -149,7 +149,7 @@ public abstract class AbstractElevator {
             return Double.NaN;
         }
 
-        return (currentPosition - nextFloor) * timeIncrement / distanceToTravel;
+        return (currentPosition) * timeIncrement / distanceToTravel;
     }
 
 
