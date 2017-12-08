@@ -24,7 +24,8 @@ public class Simulation {
         NOT_STARTED,
         RUNNING,
         FINISHED;
-    };
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(Simulation.class);
 
     private final List<AbstractElevator> listElevators = new ArrayList<>();
@@ -47,7 +48,8 @@ public class Simulation {
         initialize(elevators);
     }
 
-    public Simulation(final List<AbstractElevator> elevators, final List<PickupRequest> pickupRequests, final AbstractElevatorScheduler scheduler) {
+    public Simulation(final List<AbstractElevator> elevators, final List<PickupRequest> pickupRequests,
+            final AbstractElevatorScheduler scheduler) {
         this.scheduler = scheduler;
         listPickupRequests = pickupRequests;
         initialize(elevators);
@@ -151,10 +153,14 @@ public class Simulation {
         return listIdleElevators;
     }
 
-
+    /**
+     * The one and only main function.
+     * @param args command-line arguments
+     */
     public static final void main(final String[] args) {
         final double experimentDurationInSeconds = 20000.0;
-        final AbstractPickupRequestGenerator pickupRequestGenerator = new RegularIntervalGenerator(0, 1, experimentDurationInSeconds);
+        final AbstractPickupRequestGenerator pickupRequestGenerator =
+                new RegularIntervalGenerator(0, 1, experimentDurationInSeconds);
         List<PickupRequest> sortedRequests = pickupRequestGenerator.generatePickupRequests(20);
 
         Simulation simulation = new Simulation(1, sortedRequests);

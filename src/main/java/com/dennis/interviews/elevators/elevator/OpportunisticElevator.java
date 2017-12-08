@@ -7,17 +7,20 @@ import com.dennis.interviews.elevators.AbstractElevator;
 
 public class OpportunisticElevator extends AbstractElevator {
     private static final Logger LOG = LoggerFactory.getLogger(OpportunisticElevator.class);
+
     public OpportunisticElevator(final String name) {
         super(name);
     }
 
     @Override
-    public void processStateAscendingCrossFloors(final double newPosition, final double nextFloor, final double timeIncrement, final double timeElapsedUntilCrossingFloors) {
+    public void processStateAscendingCrossFloors(final double newPosition, final double nextFloor,
+            final double timeIncrement, final double timeElapsedUntilCrossingFloors) {
         openElevatorDoors(newPosition, nextFloor, timeIncrement, timeElapsedUntilCrossingFloors);
     }
 
     @Override
-    public void processStateDescendingCrossFloors(final double newPosition, final double nextFloor, final double timeIncrement, final double timeElapsedUntilCrossingFloors) {
+    public void processStateDescendingCrossFloors(final double newPosition, final double nextFloor,
+            final double timeIncrement, final double timeElapsedUntilCrossingFloors) {
         openElevatorDoors(newPosition, nextFloor, timeIncrement, timeElapsedUntilCrossingFloors);
     }
 

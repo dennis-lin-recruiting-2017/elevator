@@ -22,7 +22,7 @@ public abstract class AbstractElevator {
         DESCENDING,
         LOADING,
         IDLE;
-    };
+    }
 
     private final String name;
 
@@ -51,9 +51,8 @@ public abstract class AbstractElevator {
     }
 
     /**
-     * Sets the simulation that this elevator is associated with.
-     *
-     * NOTE:  Package visibility so only the abstract objects can set this value.
+     * Sets the simulation that this elevator is associated with. (NOTE:  Package visibility so only the abstract
+     * objects can set this value)
      *
      * @param newSimulation the simulation that this elevator is associated with
      */
@@ -69,7 +68,7 @@ public abstract class AbstractElevator {
         return minFloor;
     }
 
-    public void setMinFloor(double minFloor) {
+    public void setMinFloor(final double minFloor) {
         this.minFloor = minFloor;
     }
 
@@ -77,11 +76,11 @@ public abstract class AbstractElevator {
         return maxFloor;
     }
 
-    public void setMaxFloor(double maxFloor) {
+    public void setMaxFloor(final double maxFloor) {
         this.maxFloor = maxFloor;
     }
 
-    public void setTargetFloor(double newTargetFloor) {
+    public void setTargetFloor(final double newTargetFloor) {
         if (newTargetFloor < minFloor) {
             throw new IllegalArgumentException(
                     String.format("Attempted to target floor of Elevator(%s) to %f.  Min floor is $f",
@@ -111,7 +110,8 @@ public abstract class AbstractElevator {
         }
     }
 
-    public static final boolean didCrossFloorAscending(final double currentPosition, final double speed, final double timeIncrement) {
+    public static final boolean didCrossFloorAscending(final double currentPosition, final double speed,
+            final double timeIncrement) {
         final double distanceToTravel = timeIncrement * speed;
         final double newPosition = currentPosition + distanceToTravel;
         final double oldFloor = Math.floor(currentPosition);
@@ -120,7 +120,8 @@ public abstract class AbstractElevator {
         return Math.abs(nextFloor - oldFloor) > DELTA_ALLOWED;
     }
 
-    public static final double calculateElapsedTimeWhenCrossingFloorsAscending(final double currentPosition, final double speed, final double timeIncrement) {
+    public static final double calculateElapsedTimeWhenCrossingFloorsAscending(final double currentPosition,
+            final double speed, final double timeIncrement) {
         final double distanceToTravel = timeIncrement * speed;
         final double newPosition = currentPosition + distanceToTravel;
         final double oldFloor = Math.floor(currentPosition);
@@ -133,7 +134,8 @@ public abstract class AbstractElevator {
         return (nextFloor - currentPosition) * timeIncrement / distanceToTravel;
     }
 
-    public static final boolean didCrossFloorDescending(final double currentPosition, final double speed, final double timeIncrement) {
+    public static final boolean didCrossFloorDescending(final double currentPosition, final double speed,
+            final double timeIncrement) {
         final double distanceToTravel = timeIncrement * speed;
         final double newPosition = currentPosition - distanceToTravel;
         final double oldFloor = Math.ceil(currentPosition);
@@ -142,7 +144,8 @@ public abstract class AbstractElevator {
         return Math.abs(nextFloor - oldFloor) > DELTA_ALLOWED;
     }
 
-    public static final double calculateElapsedTimeWhenCrossingFloorsDescending(final double currentPosition, final double speed, final double timeIncrement) {
+    public static final double calculateElapsedTimeWhenCrossingFloorsDescending(final double currentPosition,
+            final double speed, final double timeIncrement) {
         final double distanceToTravel = timeIncrement * speed;
         final double newPosition = currentPosition - distanceToTravel;
         final double oldFloor = Math.ceil(currentPosition);
@@ -265,7 +268,8 @@ public abstract class AbstractElevator {
     }
 
     /**
-     * @param timeIncrement
+     * Common function for simulating an ascending elevator.
+     * @param timeIncrement the amount of time to advance the simulation by
      */
     private void processStateAscending(final double timeIncrement) {
         final double distanceToTravel = timeIncrement * getSpeed();
@@ -283,23 +287,27 @@ public abstract class AbstractElevator {
         //  We just crossed the a new floor!
         //  1.  First calculate the time we crossed the floor and increment the timestamp of the elevator.
         final double timeElapsedUntilCrossingFloors =
-                AbstractElevator.calculateElapsedTimeWhenCrossingFloorsAscending(getCurrentPosition(), getSpeed(), timeIncrement);
+                AbstractElevator.calculateElapsedTimeWhenCrossingFloorsAscending(
+                        getCurrentPosition(), getSpeed(), timeIncrement);
 
         processStateAscendingCrossFloors(newPosition, nextFloor, timeIncrement, timeElapsedUntilCrossingFloors);
     }
 
     /**
-     * Simulates what an elevator would do as it crosses a floor when ascending (maybe open its doors and let some passengers out?)
-     * @param newPosition
-     * @param nextFloor
-     * @param timeIncrement
-     * @param timeElapsedUntilCrossingFloors
+     * Simulates what an elevator would do as it crosses a floor when ascending (maybe open its doorsand let some
+     * passengers out?).
+     * @param newPosition the expected new position of the elevator at the end of the time increment
+     * @param nextFloor the floor that was crossed
+     * @param timeIncrement the amount of time to advance the simulation by
+     * @param timeElapsedUntilCrossingFloors the time elapsed when the floor will be crossed
      */
-    protected abstract void processStateAscendingCrossFloors(final double newPosition, final double nextFloor, final double timeIncrement, final double timeElapsedUntilCrossingFloors);
+    protected abstract void processStateAscendingCrossFloors(final double newPosition, final double nextFloor,
+            final double timeIncrement, final double timeElapsedUntilCrossingFloors);
 
 
     /**
-     * @param timeIncrement
+     * Common function for simulating a descending elevator.
+     * @param timeIncrement the time to increment the simulation by
      */
     private void processStateDescending(final double timeIncrement) {
         final double distanceToTravel = timeIncrement * getSpeed();
@@ -317,28 +325,31 @@ public abstract class AbstractElevator {
         //  We just crossed the a new floor!
         //  1.  First calculate the time we crossed the floor and increment the timestamp of the elevator.
         final double timeElapsedUntilCrossingFloors =
-                AbstractElevator.calculateElapsedTimeWhenCrossingFloorsDescending(getCurrentPosition(), getSpeed(), timeIncrement);
+                AbstractElevator.calculateElapsedTimeWhenCrossingFloorsDescending(
+                        getCurrentPosition(), getSpeed(), timeIncrement);
 
         processStateDescendingCrossFloors(newPosition, nextFloor, timeIncrement, timeElapsedUntilCrossingFloors);
     }
 
     /**
-     * Simulates what an elevator would do as it crosses a floor when descending (maybe open its doors and let some passengers out?)
-     * @param newPosition
-     * @param nextFloor
-     * @param timeIncrement
-     * @param timeElapsedUntilCrossingFloors
+     * Simulates what an elevator would do as it crosses a floor when descending (maybe open its doors and let some
+     * passengers out?).
+     * @param newPosition the expected new position of the elevator at the end of the time increment
+     * @param nextFloor the floor that was crossed
+     * @param timeIncrement the amount of time to advance the simulation by
+     * @param timeElapsedUntilCrossingFloors the time elapsed when the floor will be crossed
      */
-    protected abstract void processStateDescendingCrossFloors(final double newPosition, final double nextFloor, final double timeIncrement, final double timeElapsedUntilCrossingFloors);
+    protected abstract void processStateDescendingCrossFloors(final double newPosition, final double nextFloor,
+            final double timeIncrement, final double timeElapsedUntilCrossingFloors);
 
     /**
-     * Simulates what the elevator would do while it is waiting for passengers to enter/exit
-     * @param timeIncrement
+     * Simulates what the elevator would do while it is waiting for passengers to enter/exit.
+     * @param timeIncrement the amount of time to advance the simulation by
      */
     protected abstract void processStateLoading(final double timeIncrement);
 
     /**
-     *  Simulates what the elevator would do if it finds itself in an idle state (maybe re-position itself?)
+     *  Simulates what the elevator would do if it finds itself in an idle state (maybe re-position itself?).
      */
     protected abstract void processStateIdle(final double timeIncrement);
 
@@ -353,12 +364,13 @@ public abstract class AbstractElevator {
 
     /**
      * Simulating the opening of elevator doors, i.e. passengers leaving and entering the elevator.
-     * @param newPosition
-     * @param nextFloor
-     * @param timeIncrement
-     * @param timeElapsedUntilCrossingFloors
+     * @param newPosition the expected new position of the elevator at the end of the time increment
+     * @param nextFloor the floor that was crossed
+     * @param timeIncrement the amount of time to advance the simulation by
+     * @param timeElapsedUntilCrossingFloors the time elapsed when the floor will be crossed
      */
-    protected final void openElevatorDoors(final double newPosition, final double nextFloor, final double timeIncrement, final double timeElapsedUntilCrossingFloors) {
+    protected final void openElevatorDoors(final double newPosition, final double nextFloor,
+            final double timeIncrement, final double timeElapsedUntilCrossingFloors) {
         final int iNextFloor = (int) nextFloor;
         incrementTimeInCurrentState(timeElapsedUntilCrossingFloors);
         final double timeInNewState = timeIncrement - timeElapsedUntilCrossingFloors;

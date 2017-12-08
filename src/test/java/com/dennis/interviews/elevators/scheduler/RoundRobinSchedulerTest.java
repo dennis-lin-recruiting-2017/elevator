@@ -22,7 +22,8 @@ public class RoundRobinSchedulerTest extends AbstractSchedulerTest {
         listElevators.add(testElevator);
 
         List<PickupRequest> sortedRequests = new LinkedList<>();
-        PickupRequest pickupRequest = new PickupRequest(2, 2, 1.0); // Start on 2nd floor, go up 2 floors, show up at t=100.
+        // Start on 2nd floor, go up 2 floors, show up at t=100.
+        PickupRequest pickupRequest = new PickupRequest(2, 2, 1.0);
         sortedRequests.add(pickupRequest);
         pickupRequest = new PickupRequest(2, -2, 75.0); // Start on 2nd floor, go up 2 floors, show up at t=100.
         sortedRequests.add(pickupRequest);
@@ -99,7 +100,7 @@ public class RoundRobinSchedulerTest extends AbstractSchedulerTest {
         Assert.assertEquals(testElevator.getActiveRequests().size(), 1);
 
         //  Elevator should start descending at time=110.0
-        
+
         simulation.incrementTime(10.0);     // time = 116.0
         Assert.assertEquals(testElevator.getCurrentPosition(), 1.4, DELTA_ALLOWED);
         Assert.assertEquals(testElevator.getState(), AbstractElevator.State.DESCENDING);
@@ -114,7 +115,7 @@ public class RoundRobinSchedulerTest extends AbstractSchedulerTest {
         Assert.assertEquals(testElevator.getCurrentPosition(), 0.0, DELTA_ALLOWED);
         Assert.assertEquals(testElevator.getState(), AbstractElevator.State.LOADING);
         Assert.assertEquals(testElevator.getActiveRequests().size(), 0);
-        
+
         //  Elevator should arrive at ground floor at time=140.0
         simulation.incrementTime(10.0);     // time = 146.0
         Assert.assertEquals(testElevator.getCurrentPosition(), 0.0, DELTA_ALLOWED);

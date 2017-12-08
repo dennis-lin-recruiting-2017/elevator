@@ -95,7 +95,7 @@ public class BasicElevatorTest extends AbstractElevatorTest {
         Assert.assertEquals(elevator.getTimeInCurrentState(), 15.5, DELTA_ALLOWED);
     }
 
-    @DataProvider(name="getDataForTestDidCrossFloorAscending")
+    @DataProvider(name = "getDataForTestDidCrossFloorAscending")
     public Object[][] getDataForTestDidCrossFloorAscending() {
         return new Object[][] {
             new Object[] { 1.0, 0.1, 9, false },
@@ -104,12 +104,13 @@ public class BasicElevatorTest extends AbstractElevatorTest {
         };
     }
 
-    @Test(dataProvider="getDataForTestDidCrossFloorAscending")
-    public void testDidCrossFloorAscending(double startingPosition, double speed, double timeIncrement, boolean result) {
+    @Test(dataProvider = "getDataForTestDidCrossFloorAscending")
+    public void testDidCrossFloorAscending(double startingPosition, double speed, double timeIncrement,
+            boolean result) {
         Assert.assertEquals(AbstractElevator.didCrossFloorAscending(startingPosition, speed, timeIncrement), result);
     }
 
-    @DataProvider(name="getDataForCalculateTimeElapsedCrossFloorAscending")
+    @DataProvider(name = "getDataForCalculateTimeElapsedCrossFloorAscending")
     public Object[][] getDataForCalculateTimeElapsedCrossFloorAscending() {
         return new Object[][] {
             new Object[] { 1.5, 0.1, 10.0, 5.0 },
@@ -117,12 +118,14 @@ public class BasicElevatorTest extends AbstractElevatorTest {
         };
     }
 
-    @Test(dataProvider="getDataForCalculateTimeElapsedCrossFloorAscending")
-    public void testCalculateTimeElapsedCrossFloorAscending(double startingPosition, double speed, double timeIncrement, double expectedTime) {
-        Assert.assertEquals(AbstractElevator.calculateElapsedTimeWhenCrossingFloorsAscending(startingPosition, speed, timeIncrement), expectedTime, DELTA_ALLOWED);
+    @Test(dataProvider = "getDataForCalculateTimeElapsedCrossFloorAscending")
+    public void testCalculateTimeElapsedCrossFloorAscending(double startingPosition, double speed,
+            double timeIncrement, double expectedTime) {
+        Assert.assertEquals(AbstractElevator.calculateElapsedTimeWhenCrossingFloorsAscending(
+                startingPosition, speed, timeIncrement), expectedTime, DELTA_ALLOWED);
     }
 
-    @DataProvider(name="getDataForTestDidCrossFloorDescending")
+    @DataProvider(name = "getDataForTestDidCrossFloorDescending")
     public Object[][] getDataForTestDidCrossFloorDescending() {
         return new Object[][] {
             new Object[] { 2.0, 0.1, 9, false },
@@ -131,12 +134,13 @@ public class BasicElevatorTest extends AbstractElevatorTest {
         };
     }
 
-    @Test(dataProvider="getDataForTestDidCrossFloorDescending")
-    public void testDidCrossFloorDescending(double startingPosition, double speed, double timeIncrement, boolean result) {
+    @Test(dataProvider = "getDataForTestDidCrossFloorDescending")
+    public void testDidCrossFloorDescending(double startingPosition, double speed, double timeIncrement,
+            boolean result) {
         Assert.assertEquals(AbstractElevator.didCrossFloorDescending(startingPosition, speed, timeIncrement), result);
     }
 
-    @DataProvider(name="getDataForCalculateTimeElapsedCrossFloorDescending")
+    @DataProvider(name = "getDataForCalculateTimeElapsedCrossFloorDescending")
     public Object[][] getDataForCalculateTimeElapsedCrossFloorDescending() {
         return new Object[][] {
             new Object[] { 2.5, 0.1, 10.0, 5.0 },
@@ -144,8 +148,11 @@ public class BasicElevatorTest extends AbstractElevatorTest {
         };
     }
 
-    @Test(dataProvider="getDataForCalculateTimeElapsedCrossFloorDescending")
-    public void testCalculateTimeElapsedCrossFloorDescending(double startingPosition, double speed, double timeIncrement, double expectedTime) {
-        Assert.assertEquals(AbstractElevator.calculateElapsedTimeWhenCrossingFloorsAscending(startingPosition, speed, timeIncrement), expectedTime, DELTA_ALLOWED);
+    @Test(dataProvider = "getDataForCalculateTimeElapsedCrossFloorDescending")
+    public void testCalculateTimeElapsedCrossFloorDescending(double startingPos, double speed,
+            double timeIncrement, double expectedTime) {
+        Assert.assertEquals(
+                AbstractElevator.calculateElapsedTimeWhenCrossingFloorsAscending(startingPos, speed, timeIncrement),
+                expectedTime, DELTA_ALLOWED);
     }
-};
+}

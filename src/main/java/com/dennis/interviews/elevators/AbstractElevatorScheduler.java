@@ -37,16 +37,21 @@ public abstract class AbstractElevatorScheduler {
             }
         }
 
-        LOG.info("{}::scheduleElevators(currentTimestamp={}, timeIncrement={}) found idle elevators({}) and active floors({})",
-                new Object[] { getClass().getName(), currentTimestamp, timeIncrement, listIdleElevators, listFloorsToSchedule});
+        LOG.info("{}::scheduleElevators(currentTimestamp={}, timeIncrement={}) "
+                    + "found idle elevators({}) and active floors({})",
+                new Object[] { getClass().getName(), currentTimestamp, timeIncrement, listIdleElevators,
+                        listFloorsToSchedule });
         scheduleIdleElevators(listIdleElevators, listFloorsToSchedule);
     }
 
     /**
+     * Matches idle elevators with active floors (floors with waiting passengers).
+     *
      * @param listIdleElevators the list of elevators to schedule
      * @param activeFloors the set of floors with people waiting
      */
-    protected abstract void scheduleIdleElevators(final List<AbstractElevator> listIdleElevators, final List<Integer> activeFloors);
+    protected abstract void scheduleIdleElevators(final List<AbstractElevator> listIdleElevators,
+            final List<Integer> activeFloors);
 
     protected final Simulation getSimulation() {
         return simulation;

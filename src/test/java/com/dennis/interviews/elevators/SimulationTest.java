@@ -20,7 +20,8 @@ public class SimulationTest {
         listElevators.add(testElevator);
 
         List<PickupRequest> sortedRequests = new LinkedList<>();
-        PickupRequest pickupRequest = new PickupRequest(2, 2, 1.0); // Start on 2nd floor, go up 2 floors, show up at t=100.
+        // Start on 2nd floor, go up 2 floors, show up at t=100.
+        PickupRequest pickupRequest = new PickupRequest(2, 2, 1.0);
         sortedRequests.add(pickupRequest);
 
         Simulation simulation = new Simulation(listElevators, sortedRequests);
@@ -71,7 +72,8 @@ public class SimulationTest {
         listElevators.add(testElevator);
 
         List<PickupRequest> sortedRequests = new LinkedList<>();
-        PickupRequest pickupRequest = new PickupRequest(2, 2, 100.0); // Start on 2nd floor, go up 2 floors, show up at t=100.
+        // Start on 2nd floor, go up 2 floors, show up at t=100.
+        PickupRequest pickupRequest = new PickupRequest(2, 2, 100.0);
         sortedRequests.add(pickupRequest);
 
         Simulation simulation = new Simulation(listElevators, sortedRequests);
@@ -97,7 +99,8 @@ public class SimulationTest {
         listElevators.add(testElevator);
 
         List<PickupRequest> sortedRequests = new LinkedList<>();
-        PickupRequest pickupRequest = new PickupRequest(4, -2, 1.0); // Start on 2nd floor, go up 2 floors, show up at t=100.
+        // Start on 2nd floor, go up 2 floors, show up at t=100.
+        PickupRequest pickupRequest = new PickupRequest(4, -2, 1.0);
         sortedRequests.add(pickupRequest);
 
         Simulation simulation = new Simulation(listElevators, sortedRequests);
@@ -158,7 +161,8 @@ public class SimulationTest {
         listElevators.add(testElevator1);
         listElevators.add(testElevator2);
 
-        PickupRequest pickupRequest = new PickupRequest(2, 2, 1.0); // Start on 2nd floor, go up 2 floors, show up at t=100.
+        // Start on 2nd floor, go up 2 floors, show up at t=100.
+        PickupRequest pickupRequest = new PickupRequest(2, 2, 1.0);
         List<PickupRequest> sortedRequests = new LinkedList<>();
         sortedRequests.add(pickupRequest);
         pickupRequest = new PickupRequest(4, -2, 1.0); // Start on 4th floor, go down 2 floors, show up at t=100.
@@ -203,7 +207,8 @@ public class SimulationTest {
 
         List<PickupRequest> sortedRequests = new LinkedList<>();
         for (int counter = 0; counter < 5; counter++) {
-            PickupRequest pickupRequest = new PickupRequest(3, 2, 0.0); // Start on 3rd floor, go up 2 floors, show up at t=100.
+            // Start on 3rd floor, go up 2 floors, show up at t=100.
+            PickupRequest pickupRequest = new PickupRequest(3, 2, 0.0);
             sortedRequests.add(pickupRequest);
         }
 
@@ -212,7 +217,8 @@ public class SimulationTest {
         Assert.assertEquals(testElevator1.getCurrentPosition(), 3.0, DELTA_ALLOWED);
         Assert.assertEquals(testElevator1.getState(), AbstractElevator.State.LOADING);
         Assert.assertEquals(testElevator1.getActiveRequests().size(), 3);
-        Assert.assertEquals(simulation.getMapActiveRequestsByFloor().get(3).size(), 2); //  More passengers than capacity
+        //  More passengers than capacity
+        Assert.assertEquals(simulation.getMapActiveRequestsByFloor().get(3).size(), 2);
         Assert.assertEquals(testElevator2.getCurrentPosition(), 2.5, DELTA_ALLOWED);
         Assert.assertEquals(testElevator2.getState(), AbstractElevator.State.ASCENDING);
         Assert.assertEquals(testElevator2.getActiveRequests().size(), 0);
