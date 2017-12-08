@@ -2,6 +2,12 @@ package com.dennis.interviews.elevators.elevator;
 
 import com.dennis.interviews.elevators.AbstractElevator;
 
+/**
+ * Can only be scheduled after it becomes empty.
+ *
+ * @author dennislin
+ *
+ */
 public class FirstComeFirstServeElevator extends AbstractElevator {
     public FirstComeFirstServeElevator(String name) {
         super(name);

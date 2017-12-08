@@ -65,7 +65,8 @@ public class PickupRequest {
 
     @Override
     public String toString() {
-        return String.format("PickupRequest(startFloor=%2d, direction=%2d, targetFloor=%2d, timestamp=%f",
-                startingFloor, direction, targetFloor, timestamp);
+        return String.format("PickupRequest(startFloor=%2d, direction=%2d, targetFloor=%2d, timestamp=%f, "
+                       + "pickup=%f, dropoff=%f",
+                startingFloor, direction, targetFloor, timestamp, timestampPickup, timestampDropoff);
     }
 }

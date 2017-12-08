@@ -179,61 +179,69 @@ public abstract class AbstractElevator {
         this.currentPosition = currentPosition;
     }
 
-    public int getMaxWeight() {
+    public final int getMaxWeight() {
         return maxWeight;
     }
 
-    public void setMaxWeight(int maxWeight) {
+    public final void setMaxWeight(int maxWeight) {
         this.maxWeight = maxWeight;
     }
 
-    public int getMaxArea() {
+    public final int getMaxArea() {
         return maxArea;
     }
 
-    public void setMaxArea(int maxArea) {
+    public final void setMaxArea(int maxArea) {
         this.maxArea = maxArea;
     }
 
-    public void setState(final State state) {
+    /**
+     * Sets the state of the elevator and resets the timer for how long the elevator has been in the current state.
+     *
+     * @param state the new state of the elevator
+     */
+    public final void setState(final State state) {
         if (state == this.state) {
             throw new IllegalArgumentException("Attempted to set elevator with same state");
         }
+
+        LOG.info("Elevator({}) changed state from {}({}) to {} at timestamp={}",
+                new Object[] { name, this.state, timeInCurrentState, state, currentTimestamp });
 
         this.state = state;
         timeInCurrentState = 0.0;
     }
 
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
-    public void setSpeed(final double newSpeed) {
+    public final void setSpeed(final double newSpeed) {
         speed = newSpeed;
     }
 
-    public double getSpeed() {
+    public final double getSpeed() {
         return speed;
     }
 
-    public State getState() {
+    public final State getState() {
         return state;
     }
 
-    public void setTimeInCurrentState(double newTimeInCurrentState) {
+    public final void setTimeInCurrentState(double newTimeInCurrentState) {
         timeInCurrentState = newTimeInCurrentState;
     }
 
-    public void incrementTimeInCurrentState(double increment) {
+    public final void incrementTimeInCurrentState(double increment) {
         timeInCurrentState += increment;
         currentTimestamp += increment;
     }
 
-    public double getTimeInCurrentState() {
+    public final double getTimeInCurrentState() {
         return timeInCurrentState;
     }
 
-    public double getCurrentTimestamp() {
+    public final double getCurrentTimestamp() {
         return currentTimestamp;
     }
 
@@ -415,7 +423,7 @@ public abstract class AbstractElevator {
                 incrementTimeInCurrentState(timeElapsedUntilCrossingFloors);
 
                 setCurrentPosition(nextFloor);
-                setState(State.IDLE);
+                setState(State.LOADING);
                 incrementTimeInCurrentState(timeIncrement - timeElapsedUntilCrossingFloors);
             }
             return;

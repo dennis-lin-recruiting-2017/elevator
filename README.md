@@ -18,6 +18,15 @@ Time is represented as a double, were 1.0 is considerd to be 1.0 seconds of
 real world time.  The limit on the number of elevators and events that the
 simulation can simulate are bounded by CPU and memory. 
 
+## Assumptions
+- One group of elevators very close to each other
+- Passenger behavior
+  - All passengers travel independently of each other (no inseparable couples or families)
+  - Passengers do not change their mind when on the elevator (i.e. travel 6 out of 7 floors and take the stairs).
+  - All passengers weigh the same (i.e. 1 unit)
+  - Passenger size (i.e. area taken up) not implemented yet, so it is ignored
+- Elevator fungibility vs wear-and-tear in real life
+
 ## Scheduling Algorithm used:
 I used an optimistic/greedy version of the "first-come, first served" algorithm
 to model how most real-world elevators seem to work.  The key differences

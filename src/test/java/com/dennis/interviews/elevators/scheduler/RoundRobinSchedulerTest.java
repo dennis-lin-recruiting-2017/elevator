@@ -40,6 +40,8 @@ public class RoundRobinSchedulerTest extends AbstractSchedulerTest {
         Assert.assertEquals(testElevator.getCurrentPosition(), 2.0, DELTA_ALLOWED);
         Assert.assertEquals(testElevator.getState(), AbstractElevator.State.LOADING);
         Assert.assertEquals(testElevator.getActiveRequests().size(), 1);
+        Assert.assertEquals(testElevator.getActiveRequests().get(0).getTimestampPickup(), 26.0, DELTA_ALLOWED);
+        Assert.assertEquals(testElevator.getActiveRequests().get(0).getTimestampDropoff(), 0.0, DELTA_ALLOWED);
 
         simulation.incrementTime(15.0);     // time = 26.0
         Assert.assertEquals(testElevator.getCurrentPosition(), 2.1, DELTA_ALLOWED);
@@ -55,6 +57,8 @@ public class RoundRobinSchedulerTest extends AbstractSchedulerTest {
         Assert.assertEquals(testElevator.getCurrentPosition(), 4.0, DELTA_ALLOWED);
         Assert.assertEquals(testElevator.getState(), AbstractElevator.State.LOADING);
         Assert.assertEquals(testElevator.getActiveRequests().size(), 0);
+        Assert.assertEquals(testElevator.getServicedRequests().size(), 1);
+        Assert.assertEquals(testElevator.getServicedRequests().get(0).getTimestampDropoff(), 45.0, DELTA_ALLOWED);
 
         simulation.incrementTime(15.0);     // time = 61.0
         Assert.assertEquals(testElevator.getCurrentPosition(), 4.0, DELTA_ALLOWED);
@@ -123,5 +127,85 @@ public class RoundRobinSchedulerTest extends AbstractSchedulerTest {
         Assert.assertEquals(testElevator.getActiveRequests().size(), 0);
 
         Assert.assertEquals(simulation.getState(), Simulation.State.FINISHED);
+    }
+
+    @Test
+    public void testScheduleOneElevatorMultiplePassengers() {
+        AbstractElevator testElevator = new OpportunisticElevator("test1");
+        testElevator.setCurrentPosition(1.0);
+        List<AbstractElevator> listElevators = new LinkedList<>();
+        listElevators.add(testElevator);
+
+        List<PickupRequest> sortedRequests = new LinkedList<>();
+        // Start on 2nd floor, go up 2 floors, show up at t=100.
+        PickupRequest pickupRequest = new PickupRequest(2, 2, 1.0);
+        sortedRequests.add(pickupRequest);
+        pickupRequest = new PickupRequest(2, 3, 0.0);
+        sortedRequests.add(pickupRequest);
+        pickupRequest = new PickupRequest(2, 4, 0.0);
+        sortedRequests.add(pickupRequest);
+
+
+        AbstractElevatorScheduler scheduler = new RoundRobinScheduler();
+        Simulation simulation = new Simulation(listElevators, sortedRequests, scheduler);
+
+        simulation.incrementTime(9.0);      // time = 9.0
+        Assert.assertEquals(testElevator.getCurrentPosition(), 1.9, DELTA_ALLOWED);
+        Assert.assertEquals(testElevator.getState(), AbstractElevator.State.ASCENDING);
+        Assert.assertEquals(testElevator.getActiveRequests().size(), 0);
+
+        simulation.incrementTime(2.0);      // time = 11.0
+        Assert.assertEquals(testElevator.getCurrentPosition(), 2.0, DELTA_ALLOWED);
+        Assert.assertEquals(testElevator.getState(), AbstractElevator.State.LOADING);
+        Assert.assertEquals(testElevator.getActiveRequests().size(), 3);
+
+        simulation.incrementTime(15.0);     // time = 26.0
+        Assert.assertEquals(testElevator.getCurrentPosition(), 2.1, DELTA_ALLOWED);
+        Assert.assertEquals(testElevator.getState(), AbstractElevator.State.ASCENDING);
+        Assert.assertEquals(testElevator.getActiveRequests().size(), 3);
+
+        simulation.incrementTime(15.0);     // time = 41.0
+        Assert.assertEquals(testElevator.getCurrentPosition(), 3.6, DELTA_ALLOWED);
+        Assert.assertEquals(testElevator.getState(), AbstractElevator.State.ASCENDING);
+        Assert.assertEquals(testElevator.getActiveRequests().size(), 3);
+
+        simulation.incrementTime(5.0);      // time = 46.0
+        Assert.assertEquals(testElevator.getCurrentPosition(), 4.0, DELTA_ALLOWED);
+        Assert.assertEquals(testElevator.getState(), AbstractElevator.State.LOADING);
+        Assert.assertEquals(testElevator.getActiveRequests().size(), 2);
+        Assert.assertEquals(testElevator.getServicedRequests().size(), 1);
+        Assert.assertEquals(testElevator.getServicedRequests().get(0).getTimestampDropoff(), 45.0, DELTA_ALLOWED);
+
+        simulation.incrementTime(15.0);     // time = 61.0
+        Assert.assertEquals(testElevator.getCurrentPosition(), 4.1, DELTA_ALLOWED);
+        Assert.assertEquals(testElevator.getState(), AbstractElevator.State.ASCENDING);
+        Assert.assertEquals(testElevator.getActiveRequests().size(), 2);
+        Assert.assertEquals(testElevator.getServicedRequests().size(), 1);
+
+        simulation.incrementTime(10.0);     // time = 71.0
+        Assert.assertEquals(testElevator.getCurrentPosition(), 5.0, DELTA_ALLOWED);
+        Assert.assertEquals(testElevator.getState(), AbstractElevator.State.LOADING);
+        Assert.assertEquals(testElevator.getActiveRequests().size(), 1);
+        Assert.assertEquals(testElevator.getServicedRequests().size(), 2);
+        Assert.assertEquals(testElevator.getServicedRequests().get(1).getTimestampDropoff(), 65.0, DELTA_ALLOWED);
+
+        simulation.incrementTime(15.0);     // time = 86.0
+        Assert.assertEquals(testElevator.getCurrentPosition(), 5.1, DELTA_ALLOWED);
+        Assert.assertEquals(testElevator.getState(), AbstractElevator.State.ASCENDING);
+        Assert.assertEquals(testElevator.getActiveRequests().size(), 1);
+        Assert.assertEquals(testElevator.getServicedRequests().size(), 2);
+
+        simulation.incrementTime(10.0);     // time = 96.0
+        Assert.assertEquals(testElevator.getCurrentPosition(), 6.0, DELTA_ALLOWED);
+        Assert.assertEquals(testElevator.getState(), AbstractElevator.State.LOADING);
+        Assert.assertEquals(testElevator.getActiveRequests().size(), 0);
+        Assert.assertEquals(testElevator.getServicedRequests().size(), 3);
+        Assert.assertEquals(testElevator.getServicedRequests().get(2).getTimestampDropoff(), 85.0, DELTA_ALLOWED);
+
+        simulation.incrementTime(15.0);     // time = 111.0
+        Assert.assertEquals(testElevator.getCurrentPosition(), 6.0, DELTA_ALLOWED);
+        Assert.assertEquals(testElevator.getState(), AbstractElevator.State.IDLE);
+        Assert.assertEquals(testElevator.getActiveRequests().size(), 0);
+        Assert.assertEquals(testElevator.getServicedRequests().size(), 3);
     }
 }

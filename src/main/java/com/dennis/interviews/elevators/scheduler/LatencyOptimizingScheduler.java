@@ -5,10 +5,10 @@ import java.util.List;
 import com.dennis.interviews.elevators.AbstractElevator;
 import com.dennis.interviews.elevators.AbstractElevatorScheduler;
 
-public class OpportunisticScheduler extends AbstractElevatorScheduler {
+public class LatencyOptimizingScheduler extends AbstractElevatorScheduler {
     @Override
     protected void scheduleIdleElevators(List<AbstractElevator> listIdleElevators, List<Integer> activeFloors) {
-        //  TODO:  Schedule the elevators to maximize elevator usage (i.e. minimize elevators traveling empty)
+        //  Send each elevator to the closest active floor.
         throw new RuntimeException("Not implemented yet.");
     }
 }

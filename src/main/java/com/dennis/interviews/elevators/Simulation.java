@@ -16,10 +16,10 @@ import com.dennis.interviews.elevators.pickup.RegularIntervalGenerator;
 /**
  * First pass at creating a simulation.  I did not get an opportunity to re-factor out the code (please see
  * the AbstractSimulation.java class in the same package).
- * @author dennislin
  *
+ * @author dennislin
  */
-public class Simulation {
+public final class Simulation {
     public static enum State {
         NOT_STARTED,
         RUNNING,
@@ -34,7 +34,7 @@ public class Simulation {
     private final Map<Integer, List<PickupRequest>> mapActiveRequestsByFloor = new HashMap<>();
 
     private State state = State.NOT_STARTED;
-    //private static final double TIMESTAMP_INCREMENT = 1.0;
+    private static final double TIMESTAMP_INCREMENT = 1.0;
     private double currentTimestamp = 0.0;
 
     @SuppressWarnings("unused")
@@ -42,12 +42,25 @@ public class Simulation {
         throw new RuntimeException("Should not call default constructor.");
     }
 
+    /**
+     * Constructor used for unit testing the simulation engine (does not need a schedule).
+     *
+     * @param elevators the elevators to simulate
+     * @param pickupRequests the pickup requests / passengers to service
+     */
     public Simulation(final List<AbstractElevator> elevators, final List<PickupRequest> pickupRequests) {
         this.scheduler = null;
         listPickupRequests = pickupRequests;
         initialize(elevators);
     }
 
+    /**
+     * Constructor used for unit testing the simulation engine.
+     *
+     * @param elevators the elevators to simulate
+     * @param pickupRequests the pickup requests / passengers to service
+     * @param scheduler the elevator scheduler to use to schedule idle elevators
+     */
     public Simulation(final List<AbstractElevator> elevators, final List<PickupRequest> pickupRequests,
             final AbstractElevatorScheduler scheduler) {
         this.scheduler = scheduler;
@@ -86,6 +99,12 @@ public class Simulation {
     public final void simulate() {
         if (currentTimestamp > 0.0) {
             throw new IllegalStateException("Simulation has already been started -- can not restart.");
+        }
+
+        state = State.RUNNING;
+
+        while (State.FINISHED != state) {
+            incrementTime(TIMESTAMP_INCREMENT);
         }
     }
 
@@ -142,6 +161,11 @@ public class Simulation {
         return mapActiveRequestsByFloor;
     }
 
+    /**
+     * Convenient function to search for all the idle elevators at the current timestamp.
+     *
+     * @return the list of idle elevators at the current timestamp
+     */
     public final List<AbstractElevator> getIdleElevators() {
         List<AbstractElevator> listIdleElevators = new ArrayList<>();
         for (AbstractElevator elevator : listElevators) {

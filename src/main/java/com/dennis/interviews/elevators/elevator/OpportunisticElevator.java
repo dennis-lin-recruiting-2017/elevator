@@ -1,13 +1,14 @@
 package com.dennis.interviews.elevators.elevator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.dennis.interviews.elevators.AbstractElevator;
 
+/**
+ *  Implements the behavior seen in most elevators, i.e. opens doors for passengers in the carriage who may have
+ *  different final destinations, and picking up passengers en route to a final destination.
+ *
+ *  @author dennislin
+ */
 public class OpportunisticElevator extends AbstractElevator {
-    private static final Logger LOG = LoggerFactory.getLogger(OpportunisticElevator.class);
-
     public OpportunisticElevator(final String name) {
         super(name);
     }
