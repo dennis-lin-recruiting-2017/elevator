@@ -10,9 +10,9 @@ import com.dennis.interviews.elevators.Simulation;
 import com.dennis.interviews.elevators.elevator.OpportunisticElevator;
 import com.dennis.interviews.elevators.pickup.AbstractPickupRequestGenerator;
 import com.dennis.interviews.elevators.pickup.RegularIntervalGenerator;
-import com.dennis.interviews.elevators.scheduler.GreedyMinimizeEmptyElevatorScheduler;
+import com.dennis.interviews.elevators.scheduler.RoundRobinScheduler;
 
-public class SimulationScenario01 {
+public class SimulationScenario02 {
     /**
      * The one and only main function.
      *
@@ -28,7 +28,7 @@ public class SimulationScenario01 {
         listElevators.add(new OpportunisticElevator("test1"));
         listElevators.add(new OpportunisticElevator("test2"));
 
-        AbstractElevatorScheduler scheduler = new GreedyMinimizeEmptyElevatorScheduler();
+        AbstractElevatorScheduler scheduler = new RoundRobinScheduler();
 
         Simulation simulation = new Simulation(listElevators, sortedRequests, scheduler);
         simulation.simulate();
