@@ -19,7 +19,7 @@ real world time.  The limit on the number of elevators and events that the
 simulation can simulate are bounded by CPU and memory. 
 
 ## Assumptions
-- One group of elevators very close to each other
+- All elevators on the same floor are treated as one group.
 - Passenger behavior
   - All passengers travel independently of each other (no inseparable couples or families)
   - Passengers do not change their mind once they board an the elevator.
@@ -60,6 +60,6 @@ for loads of a multi-modal nature (i.e. multiple rush hours overa period of time
 
 This is a standard Apache Maven project.  
 - To run the tests (both unit and end-to-end) - "mvn test""
-- To run either of the simulations:
+- To run either of the simulation scenarios:
   - mvn exec:java -Dexec.mainClass=com.dennis.interviews.elevators.scenarios.SimulationScenario01
   - mvn exec:java -Dexec.mainClass=com.dennis.interviews.elevators.scenarios.SimulationScenario02
