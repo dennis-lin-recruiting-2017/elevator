@@ -29,6 +29,7 @@ public class Simulation {
 
     private final List<AbstractElevator> listElevators = new ArrayList<>();
     private final List<PickupRequest> listPickupRequests;
+    private final AbstractElevatorScheduler scheduler;
     private final Map<Integer, List<PickupRequest>> mapActiveRequestsByFloor = new HashMap<>();
 
     private State state = State.NOT_STARTED;
@@ -41,18 +42,33 @@ public class Simulation {
     }
 
     public Simulation(final List<AbstractElevator> elevators, final List<PickupRequest> pickupRequests) {
+        this.scheduler = null;
+        listPickupRequests = pickupRequests;
+        initialize(elevators);
+    }
+
+    public Simulation(final List<AbstractElevator> elevators, final List<PickupRequest> pickupRequests, final AbstractElevatorScheduler scheduler) {
+        this.scheduler = scheduler;
+        listPickupRequests = pickupRequests;
+        initialize(elevators);
+    }
+
+    private void initialize(final List<AbstractElevator> elevators) {
         for (AbstractElevator elevator : elevators) {
             elevator.setSimulation(this);
             listElevators.add(elevator);
         }
 
-        listPickupRequests = pickupRequests;
         for (PickupRequest pickupRequest : listPickupRequests) {
             if (null == mapActiveRequestsByFloor.get(pickupRequest.getStartingFloor())) {
                 mapActiveRequestsByFloor.put(pickupRequest.getStartingFloor(), new LinkedList<>());
             }
 
             mapActiveRequestsByFloor.get(pickupRequest.getStartingFloor()).add(pickupRequest);
+        }
+
+        if (null != scheduler) {
+            scheduler.setSimulation(this);
         }
     }
 
@@ -62,6 +78,7 @@ public class Simulation {
         }
 
         listPickupRequests = pickupRequests;
+        this.scheduler = null;
     }
 
     public final void simulate() {
@@ -74,16 +91,15 @@ public class Simulation {
         return state;
     }
 
-    public final void incrementTime2(final double timeIncrement) {
-
-    }
-
     public final void incrementTime(final double timeIncrement) {
         if (State.FINISHED == state) {
             throw new IllegalStateException("Simulation has already finished!");
         }
 
         double newTimestamp = currentTimestamp + timeIncrement;
+        if (null != scheduler) {
+            scheduler.scheduleElevators(currentTimestamp, timeIncrement);
+        }
 
         //  1.  increment the time until the next pickup request
         for (AbstractElevator elevator : listElevators) {

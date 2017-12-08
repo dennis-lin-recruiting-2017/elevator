@@ -1,24 +1,19 @@
-package com.dennis.interviews.elevators.scheduler;
+package com.dennis.interviews.elevators;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import com.dennis.interviews.elevators.AbstractElevator;
-import com.dennis.interviews.elevators.PickupRequest;
-import com.dennis.interviews.elevators.Simulation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractElevatorScheduler {
-    @SuppressWarnings("unused")
-    private AbstractElevatorScheduler() {
-        throw new RuntimeException("Should not call default constructor.");
-    }
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractElevatorScheduler.class);
 
-    private final Simulation simulation;
+    private Simulation simulation;
 
-    public AbstractElevatorScheduler(final Simulation simulation) {
-        this.simulation = simulation;
+    final void setSimulation(final Simulation newSimulation) {
+        simulation = newSimulation;
     }
 
     /**
@@ -32,24 +27,26 @@ public abstract class AbstractElevatorScheduler {
             return;
         }
 
-        final Set<Integer> setFloorsToSchedule = new HashSet<>();
+        final List<Integer> listFloorsToSchedule = new ArrayList<>();
         final double checkTimestamp = currentTimestamp + timeIncrement;
         for (Map.Entry<Integer, List<PickupRequest>> entry : getSimulation().getMapActiveRequestsByFloor().entrySet()) {
             if ((null != entry.getValue()) && !entry.getValue().isEmpty()) {
                 if (entry.getValue().get(0).getTimestamp() < checkTimestamp) {
-                    setFloorsToSchedule.add(entry.getKey());
+                    listFloorsToSchedule.add(entry.getKey());
                 }
             }
         }
 
-        scheduleIdleElevators(listIdleElevators, setFloorsToSchedule);
+        LOG.info("{}::scheduleElevators(currentTimestamp={}, timeIncrement={}) found idle elevators({}) and active floors({})",
+                new Object[] { getClass().getName(), currentTimestamp, timeIncrement, listIdleElevators, listFloorsToSchedule});
+        scheduleIdleElevators(listIdleElevators, listFloorsToSchedule);
     }
 
     /**
      * @param listIdleElevators the list of elevators to schedule
      * @param activeFloors the set of floors with people waiting
      */
-    protected abstract void scheduleIdleElevators(final List<AbstractElevator> listIdleElevators, final Set<Integer> activeFloors);
+    protected abstract void scheduleIdleElevators(final List<AbstractElevator> listIdleElevators, final List<Integer> activeFloors);
 
     protected final Simulation getSimulation() {
         return simulation;

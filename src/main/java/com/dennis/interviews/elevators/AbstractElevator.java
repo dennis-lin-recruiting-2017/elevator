@@ -278,6 +278,13 @@ public abstract class AbstractElevator {
     }
 
 
+    /**
+     * Simulating the opening of elevator doors, i.e. passengers leaving and entering the elevator.
+     * @param newPosition
+     * @param nextFloor
+     * @param timeIncrement
+     * @param timeElapsedUntilCrossingFloors
+     */
     protected final void openElevatorDoors(final double newPosition, final double nextFloor, final double timeIncrement, final double timeElapsedUntilCrossingFloors) {
         final int iNextFloor = (int) nextFloor;
         incrementTimeInCurrentState(timeElapsedUntilCrossingFloors);
@@ -339,7 +346,11 @@ public abstract class AbstractElevator {
 
         // ... and pick up the new ones who are waiting
         for (PickupRequest newRider : newRiders) {
-            setTargetFloor(Math.max(newRider.getTargetFloor(), getTargetFloor()));
+            if (currentPosition < newPosition) {
+                setTargetFloor(Math.max(newRider.getTargetFloor(), getTargetFloor()));
+            } else {
+                setTargetFloor(Math.min(newRider.getTargetFloor(), getTargetFloor()));
+            }
             addPickupRequest(newRider);
         }
 

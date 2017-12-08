@@ -1,5 +1,6 @@
 package com.dennis.interviews.elevators.elevator;
 
-public abstract class AbstractElevatorTest {
-    public static final double DELTA_ALLOWED = 0.01;
+import com.dennis.interviews.elevators.AbstractTest;
+
+public abstract class AbstractElevatorTest extends AbstractTest {
 }
