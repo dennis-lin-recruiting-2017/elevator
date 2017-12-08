@@ -423,7 +423,7 @@ public abstract class AbstractElevator {
                 incrementTimeInCurrentState(timeElapsedUntilCrossingFloors);
 
                 setCurrentPosition(nextFloor);
-                setState(State.LOADING);
+                setState(State.IDLE);
                 incrementTimeInCurrentState(timeIncrement - timeElapsedUntilCrossingFloors);
             }
             return;
