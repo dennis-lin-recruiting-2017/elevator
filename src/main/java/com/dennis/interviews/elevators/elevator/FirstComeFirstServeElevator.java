@@ -8,6 +8,22 @@ public class FirstComeFirstServeElevator extends AbstractElevator {
     }
 
     @Override
-    public void incrementTime(double timeIncrement) {
+    protected void processStateAscending(double timeIncrement) {
+        throw new RuntimeException("Not implemented yet.");
+    }
+
+    @Override
+    protected void processStateDescending(double timeIncrement) {
+        throw new RuntimeException("Not implemented yet.");
+    }
+
+    @Override
+    protected void processStateLoading(double timeIncrement) {
+        throw new RuntimeException("Not implemented yet.");
+    }
+
+    @Override
+    protected void processStateIdle(double timeIncrement) {
+        throw new RuntimeException("Not implemented yet.");
     }
 }

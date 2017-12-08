@@ -1,7 +1,9 @@
 package com.dennis.interviews.elevators;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +41,7 @@ public abstract class AbstractElevator {
     private List<PickupRequest> listServicedRequests = new LinkedList<>();
     private Simulation simulation = null;
 
+    @SuppressWarnings("unused")
     private AbstractElevator() {
         throw new RuntimeException("Should not use default constructor");
     }
@@ -242,7 +245,29 @@ public abstract class AbstractElevator {
      *
      * @param timeIncrement the amount of time to advance the simulation by
      */
-    public abstract void incrementTime(final double timeIncrement);
+    public final void incrementTime(final double timeIncrement) {
+        LOG.info("Elevator({})::increment() ; - processing '{}' state at timeInCurrentState={}, with timeIncrement={}",
+                new Object[] {getName(), getState(), getTimeInCurrentState(), timeIncrement });
+        /**
+         * I hate switch statements -- easy to forget the terminating break statement.
+         */
+        if (State.ASCENDING == getState()) {
+            processStateAscending(timeIncrement);
+        } else if (State.DESCENDING == getState()) {
+            processStateDescending(timeIncrement);
+        } else if (State.LOADING == getState()) {
+            processStateLoading(timeIncrement);
+        } else if (State.IDLE == getState()) {
+            processStateIdle(timeIncrement);
+        } else {
+            throw new IllegalArgumentException("Elevator is in invalid or unhandled state: " + getState());
+        }
+    }
+
+    protected abstract void processStateAscending(final double timeIncrement);
+    protected abstract void processStateDescending(final double timeIncrement);
+    protected abstract void processStateLoading(final double timeIncrement);
+    protected abstract void processStateIdle(final double timeIncrement);
 
     public final List<PickupRequest> getActiveRequests() {
         return listActiveRequests;
@@ -250,5 +275,76 @@ public abstract class AbstractElevator {
 
     public final List<PickupRequest> getServicedRequests() {
         return listServicedRequests;
+    }
+
+
+    protected final void openElevatorDoors(final double newPosition, final double nextFloor, final double timeIncrement, final double timeElapsedUntilCrossingFloors) {
+        final int iNextFloor = (int) nextFloor;
+        incrementTimeInCurrentState(timeElapsedUntilCrossingFloors);
+        final double timeInNewState = timeIncrement - timeElapsedUntilCrossingFloors;
+        final double timestampCrossingFloors = getCurrentTimestamp() + timeElapsedUntilCrossingFloors;
+        setCurrentPosition(nextFloor);
+
+        //  2.  First check to see if anybody is getting off on the new floor.
+        Set<PickupRequest> setDepartingRiders = new HashSet<>();
+        for (PickupRequest pickupRequest : getActiveRequests()) {
+            if (pickupRequest.getTargetFloor() == iNextFloor) {
+                setDepartingRiders.add(pickupRequest);
+            }
+        }
+
+        //  3.  Next, check to see if anybody wanted to get on the floor at the time.
+        List<PickupRequest> listPickupRequestsAtFloor = null;
+        if (null != getSimulation()) {
+            listPickupRequestsAtFloor = getSimulation().getMapActiveRequestsByFloor().get(iNextFloor);
+        }
+
+        Set<PickupRequest> newRiders = new HashSet<>();
+        while ((null != listPickupRequestsAtFloor) && !listPickupRequestsAtFloor.isEmpty()) {
+            if (getMaxWeight() <= getActiveRequests().size() + newRiders.size() - setDepartingRiders.size()) {
+                break;
+            }
+            PickupRequest pickupRequest = listPickupRequestsAtFloor.get(0);
+            if (pickupRequest.getTimestamp() < timestampCrossingFloors) {
+                pickupRequest = listPickupRequestsAtFloor.remove(0);
+                //  Pickup time is when the elevator doors has closed.
+                pickupRequest.setTimestampPickup(timestampCrossingFloors + getPickupTimeRequired());
+                newRiders.add(pickupRequest);
+            } else {
+                break;
+            }
+        }
+
+        if (setDepartingRiders.isEmpty() && newRiders.isEmpty()) {
+            if ((State.ASCENDING == getState()) ? getTargetFloor() > nextFloor : getTargetFloor() < nextFloor) {
+                setCurrentPosition(newPosition);
+                incrementTimeInCurrentState(timeIncrement);
+            } else {
+                incrementTimeInCurrentState(timeElapsedUntilCrossingFloors);
+
+                setCurrentPosition(nextFloor);
+                setState(State.IDLE);
+                incrementTimeInCurrentState(timeIncrement - timeElapsedUntilCrossingFloors);
+            }
+            return;
+        }
+
+        //  At the time we cross the floor, we want to drop off all the riders who are getting off...
+        incrementTimeInCurrentState(timeElapsedUntilCrossingFloors);
+        for (PickupRequest pickupRequest : setDepartingRiders) {
+            pickupRequest.setTimestampDropoff(timestampCrossingFloors);
+            getServicedRequests().add(pickupRequest);
+            getActiveRequests().remove(pickupRequest);
+        }
+
+        // ... and pick up the new ones who are waiting
+        for (PickupRequest newRider : newRiders) {
+            setTargetFloor(Math.max(newRider.getTargetFloor(), getTargetFloor()));
+            addPickupRequest(newRider);
+        }
+
+        //  Then we increment the loading times
+        setState(State.LOADING);
+        incrementTimeInCurrentState(timeInNewState);
     }
 }

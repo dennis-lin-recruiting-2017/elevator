@@ -5,4 +5,4 @@
  * statistical distributions for determining arrival time, starting floor, and target
  * floor for each pickup request.
  */
-package com.dennis.interviews.elevators;
+package com.dennis.interviews.elevators.pickup;
