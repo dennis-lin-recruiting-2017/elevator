@@ -59,7 +59,7 @@ for loads of a multi-modal nature (i.e. multiple rush hours overa period of time
 ## How to execute
 
 This is a standard Apache Maven project.  
-- To run the tests (both unit and end-to-end) - "mvn test""
-- To run either of the simulations:
-  -- mvn exec:java -Dexec.mainClass=com.dennis.interviews.elevators.scenarios.SimulationScenario01
-  -- mvn exec:java -Dexec.mainClass=com.dennis.interviews.elevators.scenarios.SimulationScenario02
+* To run the tests (both unit and end-to-end) - "mvn test""
+* To run either of the simulations:
+  ** mvn exec:java -Dexec.mainClass=com.dennis.interviews.elevators.scenarios.SimulationScenario01
+  ** mvn exec:java -Dexec.mainClass=com.dennis.interviews.elevators.scenarios.SimulationScenario02
