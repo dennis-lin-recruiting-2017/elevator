@@ -60,6 +60,6 @@ for loads of a multi-modal nature (i.e. multiple rush hours overa period of time
 
 This is a standard Apache Maven project.  
 - To run the tests (both unit and end-to-end) - "mvn test""
-- To run simulation #1 - "mvn exec:java &mdash;Dexec.mainClass=com.dennis.interviews.elevators.scenarios.SimulationScenario01"
-- To run simulation #2 - "mvn exec:java &mdash;Dexec.mainClass=com.dennis.interviews.elevators.scenarios.SimulationScenario02"
+- To run simulation #1 - "mvn exec:java --Dexec.mainClass=com.dennis.interviews.elevators.scenarios.SimulationScenario01"
+- To run simulation #2 - "mvn exec:java --Dexec.mainClass=com.dennis.interviews.elevators.scenarios.SimulationScenario02"
 "
