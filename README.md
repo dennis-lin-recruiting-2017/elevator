@@ -22,38 +22,44 @@ simulation can simulate are bounded by CPU and memory.
 - One group of elevators very close to each other
 - Passenger behavior
   - All passengers travel independently of each other (no inseparable couples or families)
-  - Passengers do not change their mind when on the elevator (i.e. travel 6 out of 7 floors and take the stairs).
+  - Passengers do not change their mind once they board an the elevator.
+  - Passengers will always ride to their final destnation (i.e. no getting off early and taking the stairs).
   - All passengers weigh the same (i.e. 1 unit)
   - Passenger size (i.e. area taken up) not implemented yet, so it is ignored
-- Elevator fungibility vs wear-and-tear in real life
+- Elevator fungibility - if two elevators are idle and waiting on the same floor, then the one with the lower
+index in the array will be picked.  In real life, this might cause undue wear and tear on some elevators, but it
+is mathematically equivalent from a queueing theory perspective and greatly simplifies the implementation.
 
-## Scheduling Algorithm used:
-I used an optimistic/greedy version of the "first-come, first served" algorithm
-to model how most real-world elevators seem to work.  The key differences
-between my algorithm and the FCFS version are as follows:
+## Elevator Implementations
+- I provided an elevator modelled after the common elevator.  While serving a request, if the elevator has space,
+it will pick up requests that show up en route to the original destination and update its itinerary.
+- I did consider a "first-come, first-served" elevator.  However, if it seemed like it would quickly turn into 
+a standard elevator if it was allowed to carry multiple customers, each with a different destination floor.
 
-1.  While serving a request, if the elevator has space, it will pick up requests
-that show up en route to the original destination and update its itinerary.
-2.  Once the new riders board, the elevator will update its final destination to
-be the furthest floor of all its riders (i.e. highest destination floor for an
-ascending elevator, lowest destination floor for a descending one).
+## Scheduler Implementations:
+1.  A greedy scheduler, where elevators take the first available floor with waiting passengers.
+2.  A scheduler that schedules sends each idle elevator to closest floor with waiting passengers.
 
 I did also consider a carousel-like system imspired by the Yamanote Line in
-Tokyo, Japan (https://en.wikipedia.org/wiki/Yamanote_Line) -- it was incorrectly
-called "round robin" in my code because of time pressures.  Thie type of line
+Tokyo, Japan (https://en.wikipedia.org/wiki/Yamanote_Line).  Thie type of line
 would probably be better suited for a demand distribution that was more constant,
 whereas the optimistic/greedy FCFS version that I chose would be better suited
 for loads of a multi-modal nature (i.e. multiple rush hours overa period of time).
 
+## Possible extentions:
+1.  Extend the benefit of passengers and/or cargo (priority, max number, max weight, etc.)
+2.  I tested with all elevators being the same.  There could be elevators that only travelled certain floors.
+
 ## Implementation notes:
-Unfortunately, I was not able to complete the entire implementation in under 3
-hours.  I did include a suite of working unit tests to prove the correctness of
-the elevators operating on their own.  I was in the midst of creating the suite
-of unit tests to prove the simulations could run correctly for contrived
-scenarios of two elevators working in tandem, but I could not get these to work
-in the allotted time.
+- A simulation can consist of multiple types of elevators, but they must all share the same scheduling logic.
+- All elevators differ in the way they change states (i.e. when idle, when loading, and when crossing floors).
+- 1 elevator implementation (OpportunisticElevator) and 2 scheduler (RoundRobin and GreedyMinimizeEmptyElevator) implementations are provided.
+- There are automated tests that prove the correctness of some contrived scenarios with one or two elevators.
 
 ## How to execute
 
-This is a standard Apache Maven project.  All the tests (both unit and end-to-end)
-can be executed with the "mvn test" command. 
+This is a standard Apache Maven project.  
+- To run the tests (both unit and end-to-end) - "mvn test""
+- To run simulation #1 - "mvn exec:java -Dexec.mainClass=com.dennis.interviews.elevators.scenarios.SimulationScenario01"
+- To run simulation #2 - "mvn exec:java -Dexec.mainClass=com.dennis.interviews.elevators.scenarios.SimulationScenario02"
+"

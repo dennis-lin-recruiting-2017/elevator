@@ -12,8 +12,7 @@ import com.dennis.interviews.elevators.PickupRequest;
 import com.dennis.interviews.elevators.Simulation;
 import com.dennis.interviews.elevators.elevator.OpportunisticElevator;
 
-
-public class RoundRobinSchedulerTest extends AbstractSchedulerTest {
+public class GreedyScheduleTest extends AbstractSchedulerTest {
     @Test
     public void testScheduleOneElevator() {
         AbstractElevator testElevator = new OpportunisticElevator("test1");
@@ -28,7 +27,7 @@ public class RoundRobinSchedulerTest extends AbstractSchedulerTest {
         pickupRequest = new PickupRequest(2, -2, 75.0); // Start on 2nd floor, go up 2 floors, show up at t=100.
         sortedRequests.add(pickupRequest);
 
-        AbstractElevatorScheduler scheduler = new RoundRobinScheduler();
+        AbstractElevatorScheduler scheduler = new GreedyScheduler();
         Simulation simulation = new Simulation(listElevators, sortedRequests, scheduler);
 
         simulation.incrementTime(9.0);      // time = 9.0
@@ -146,7 +145,7 @@ public class RoundRobinSchedulerTest extends AbstractSchedulerTest {
         sortedRequests.add(pickupRequest);
 
 
-        AbstractElevatorScheduler scheduler = new RoundRobinScheduler();
+        AbstractElevatorScheduler scheduler = new GreedyScheduler();
         Simulation simulation = new Simulation(listElevators, sortedRequests, scheduler);
 
         simulation.incrementTime(9.0);      // time = 9.0

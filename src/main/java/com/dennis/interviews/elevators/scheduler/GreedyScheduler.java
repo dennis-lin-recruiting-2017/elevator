@@ -5,7 +5,7 @@ import java.util.List;
 import com.dennis.interviews.elevators.AbstractElevator;
 import com.dennis.interviews.elevators.AbstractElevatorScheduler;
 
-public class RoundRobinScheduler extends AbstractElevatorScheduler {
+public class GreedyScheduler extends AbstractElevatorScheduler {
     @Override
     protected void scheduleIdleElevators(List<AbstractElevator> listIdleElevators, List<Integer> activeFloors) {
         for (AbstractElevator idleElevator : listIdleElevators) {
