@@ -32,9 +32,10 @@ public class Simulation {
     private final Map<Integer, List<PickupRequest>> mapActiveRequestsByFloor = new HashMap<>();
 
     private State state = State.NOT_STARTED;
-    private static final double TIMESTAMP_INCREMENT = 1.0;
+    //private static final double TIMESTAMP_INCREMENT = 1.0;
     private double currentTimestamp = 0.0;
 
+    @SuppressWarnings("unused")
     private Simulation() {
         throw new RuntimeException("Should not call default constructor.");
     }
@@ -106,7 +107,7 @@ public class Simulation {
         return remaining;
     }
 
-    private boolean areAllElevatorsIdle() {
+    private final boolean areAllElevatorsIdle() {
         boolean isIdle = true;
         for (AbstractElevator elevator : listElevators) {
             isIdle = isIdle && (elevator.getState() == AbstractElevator.State.IDLE);
@@ -123,9 +124,17 @@ public class Simulation {
         return mapActiveRequestsByFloor;
     }
 
-    public void schedulePickupRequest(final PickupRequest nextPickupRequest) {
+    public final List<AbstractElevator> getIdleElevators() {
+        List<AbstractElevator> listIdleElevators = new ArrayList<>();
+        for (AbstractElevator elevator : listElevators) {
+            if (elevator.getState() == AbstractElevator.State.IDLE) {
+                listIdleElevators.add(elevator);
+            }
+        }
 
+        return listIdleElevators;
     }
+
 
     public static final void main(final String[] args) {
         final double experimentDurationInSeconds = 20000.0;

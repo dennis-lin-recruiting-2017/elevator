@@ -42,24 +42,23 @@ public class OpportunisticElevator extends AbstractElevator {
 		//  2.  First check to see if anybody is getting off on the new floor.
 		Set<PickupRequest> setRidersGettingOffOnNextFloor = new HashSet<>();
 		final int iNextFloor = (int) nextFloor;
-		System.out.println("Old floor: " + oldFloor);
-		System.out.println("New floor 1: " + nextFloor);
-		System.out.println("New floor 2: " + iNextFloor);
-		System.out.println("*** BEFORE - active: " + getActiveRequests().size());
-		System.out.println("*** BEFORE - leaving : " + setRidersGettingOffOnNextFloor.size());
 		for (PickupRequest pickupRequest : getActiveRequests()) {
-			System.out.println("*** BEFORE - leaving - target floor: " + pickupRequest.getTargetFloor());
 			if (pickupRequest.getTargetFloor() == iNextFloor) {
 				setRidersGettingOffOnNextFloor.add(pickupRequest);
 			}
 		}
-		System.out.println("*** AFTER - active: " + getActiveRequests().size());
-		System.out.println("*** AFTER - leaving : " + setRidersGettingOffOnNextFloor.size());
 
 		//  3.  Next, check to see if anybody wanted to get on the floor at the time.
-		List<PickupRequest> listPickupRequestsAtFloor = getSimulation().getMapActiveRequestsByFloor().get(iNextFloor);
+		List<PickupRequest> listPickupRequestsAtFloor = null;
+		if (null != getSimulation()) {
+		    listPickupRequestsAtFloor = getSimulation().getMapActiveRequestsByFloor().get(iNextFloor);
+		}
+
 		Set<PickupRequest> newRiders = new HashSet<>();
 		while ((null != listPickupRequestsAtFloor) && !listPickupRequestsAtFloor.isEmpty()) {
+		    if (getMaxWeight() <= getActiveRequests().size() + newRiders.size() - setRidersGettingOffOnNextFloor.size()) {
+		        break;
+		    }
 		    PickupRequest pickupRequest = listPickupRequestsAtFloor.get(0);
 		    if (pickupRequest.getTimestamp() < timestampCrossingFloors) {
 		        pickupRequest = listPickupRequestsAtFloor.remove(0);
@@ -70,10 +69,8 @@ public class OpportunisticElevator extends AbstractElevator {
 		        break;
 		    }
 		}
-		System.out.println("*** New riders: " + newRiders.size());
 
 		if (setRidersGettingOffOnNextFloor.isEmpty() && newRiders.isEmpty()) {
-		    System.out.println("**** No one getting on or off, continuing...");
 
 		    if (getTargetFloor() > nextFloor) {
                 setCurrentPosition(newPosition);
@@ -95,25 +92,12 @@ public class OpportunisticElevator extends AbstractElevator {
 			getServicedRequests().add(pickupRequest);
 			getActiveRequests().remove(pickupRequest);
 		}
-		System.out.println("*** AFTER 2 - active: " + getActiveRequests().size());
-		System.out.println("*** AFTER 2 - leaving 1: " + timeElapsedUntilCrossingFloors);
-		System.out.println("*** AFTER 2 - leaving 2: " + timeInNewState);
-		System.out.println("*** AFTER 2 - leaving 3: " + setRidersGettingOffOnNextFloor.size());
 
 		// ... and pick up the new ones who are waiting
 		for (PickupRequest newRider : newRiders) {
 		    setTargetFloor(Math.max(newRider.getTargetFloor(), getTargetFloor()));
 		    addPickupRequest(newRider);
 		}
-		/*
-		List<PickupRequest> queuedRiders = (null != getSimulation()) ?
-				getSimulation().getMapActiveRequestsByFloor().get(new Integer(iNextFloor)) : null;
-		while ((getActiveRequests().size() < getMaxWeight()) && (null != queuedRiders) && !queuedRiders.isEmpty()) {
-			PickupRequest nextRider = queuedRiders.remove(0);
-			nextRider.setTimestampPickup(getCurrentTimestamp());
-			getActiveRequests().add(nextRider);
-		}
-		//*/
 
 		//  Then we increment the loading times
 		setState(State.LOADING);
@@ -146,24 +130,22 @@ public class OpportunisticElevator extends AbstractElevator {
         //  2.  First check to see if anybody is getting off on the new floor.
         Set<PickupRequest> setRidersGettingOffOnNextFloor = new HashSet<>();
         final int iNextFloor = (int) nextFloor;
-        System.out.println("Old floor: " + oldFloor);
-        System.out.println("New floor 1: " + nextFloor);
-        System.out.println("New floor 2: " + iNextFloor);
-        System.out.println("*** BEFORE - active: " + getActiveRequests().size());
-        System.out.println("*** BEFORE - leaving : " + setRidersGettingOffOnNextFloor.size());
         for (PickupRequest pickupRequest : getActiveRequests()) {
-            System.out.println("*** BEFORE - leaving - target floor: " + pickupRequest.getTargetFloor());
             if (pickupRequest.getTargetFloor() == iNextFloor) {
                 setRidersGettingOffOnNextFloor.add(pickupRequest);
             }
         }
-        System.out.println("*** AFTER - active: " + getActiveRequests().size());
-        System.out.println("*** AFTER - leaving : " + setRidersGettingOffOnNextFloor.size());
 
         //  3.  Next, check to see if anybody wanted to get on the floor at the time.
-        List<PickupRequest> listPickupRequestsAtFloor = getSimulation().getMapActiveRequestsByFloor().get(iNextFloor);
+        List<PickupRequest> listPickupRequestsAtFloor = null;
+        if (null != getSimulation()) {
+            listPickupRequestsAtFloor = getSimulation().getMapActiveRequestsByFloor().get(iNextFloor);
+        }
         Set<PickupRequest> newRiders = new HashSet<>();
         while ((null != listPickupRequestsAtFloor) && !listPickupRequestsAtFloor.isEmpty()) {
+            if (getMaxWeight() <= getActiveRequests().size() - setRidersGettingOffOnNextFloor.size() + newRiders.size()) {
+                break;
+            }
             PickupRequest pickupRequest = listPickupRequestsAtFloor.get(0);
             if (pickupRequest.getTimestamp() < timestampCrossingFloors) {
                 pickupRequest = listPickupRequestsAtFloor.remove(0);
@@ -174,10 +156,8 @@ public class OpportunisticElevator extends AbstractElevator {
                 break;
             }
         }
-        System.out.println("*** New riders: " + newRiders.size());
 
         if (setRidersGettingOffOnNextFloor.isEmpty() && newRiders.isEmpty()) {
-            System.out.println("**** No one getting on or off, continuing...");
 
             if (getTargetFloor() < nextFloor) {
                 setCurrentPosition(newPosition);
@@ -200,25 +180,12 @@ public class OpportunisticElevator extends AbstractElevator {
             getServicedRequests().add(pickupRequest);
             getActiveRequests().remove(pickupRequest);
         }
-        System.out.println("*** AFTER 2 - active: " + getActiveRequests().size());
-        System.out.println("*** AFTER 2 - leaving 1: " + timeElapsedUntilCrossingFloors);
-        System.out.println("*** AFTER 2 - leaving 2: " + timeInNewState);
-        System.out.println("*** AFTER 2 - leaving 3: " + setRidersGettingOffOnNextFloor.size());
 
         // ... and pick up the new ones who are waiting
         for (PickupRequest newRider : newRiders) {
             setTargetFloor(Math.min(newRider.getTargetFloor(), getTargetFloor()));
             addPickupRequest(newRider);
         }
-        /*
-        List<PickupRequest> queuedRiders = (null != getSimulation()) ?
-                getSimulation().getMapActiveRequestsByFloor().get(new Integer(iNextFloor)) : null;
-        while ((getActiveRequests().size() < getMaxWeight()) && (null != queuedRiders) && !queuedRiders.isEmpty()) {
-            PickupRequest nextRider = queuedRiders.remove(0);
-            nextRider.setTimestampPickup(getCurrentTimestamp());
-            getActiveRequests().add(nextRider);
-        }
-        //*/
 
         //  Then we increment the loading times
         setState(State.LOADING);

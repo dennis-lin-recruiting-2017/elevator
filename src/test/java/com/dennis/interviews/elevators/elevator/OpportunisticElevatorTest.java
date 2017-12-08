@@ -42,7 +42,7 @@ public class OpportunisticElevatorTest extends AbstractElevatorTest {
     }
 
     @Test
-    public void testMovementDesscendBetweenTwoPointsOverTime() {
+    public void testMovementDescendBetweenTwoPointsOverTime() {
         //  Initialize pickup request
         PickupRequest pickupRequest = new PickupRequest(6, -1, 0.0);
 
