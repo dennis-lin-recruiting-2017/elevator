@@ -264,9 +264,82 @@ public abstract class AbstractElevator {
         }
     }
 
-    protected abstract void processStateAscending(final double timeIncrement);
-    protected abstract void processStateDescending(final double timeIncrement);
+    /**
+     * @param timeIncrement
+     */
+    private void processStateAscending(final double timeIncrement) {
+        final double distanceToTravel = timeIncrement * getSpeed();
+        final double newPosition = getCurrentPosition() + distanceToTravel;
+        final double nextFloor = Math.floor(newPosition);
+
+        //  Never crossed a floor -- no special handling needed
+        if (!AbstractElevator.didCrossFloorAscending(getCurrentPosition(), getSpeed(), timeIncrement)) {
+            incrementTimeInCurrentState(timeIncrement);
+            setCurrentPosition(newPosition);
+
+            return;
+        }
+
+        //  We just crossed the a new floor!
+        //  1.  First calculate the time we crossed the floor and increment the timestamp of the elevator.
+        final double timeElapsedUntilCrossingFloors =
+                AbstractElevator.calculateElapsedTimeWhenCrossingFloorsAscending(getCurrentPosition(), getSpeed(), timeIncrement);
+
+        processStateAscendingCrossFloors(newPosition, nextFloor, timeIncrement, timeElapsedUntilCrossingFloors);
+    }
+
+    /**
+     * Simulates what an elevator would do as it crosses a floor when ascending (maybe open its doors and let some passengers out?)
+     * @param newPosition
+     * @param nextFloor
+     * @param timeIncrement
+     * @param timeElapsedUntilCrossingFloors
+     */
+    protected abstract void processStateAscendingCrossFloors(final double newPosition, final double nextFloor, final double timeIncrement, final double timeElapsedUntilCrossingFloors);
+
+
+    /**
+     * @param timeIncrement
+     */
+    private void processStateDescending(final double timeIncrement) {
+        final double distanceToTravel = timeIncrement * getSpeed();
+        final double newPosition = getCurrentPosition() - distanceToTravel;
+        final double nextFloor = Math.ceil(newPosition);
+
+        //  Never crossed a floor -- no special handling needed
+        if (!AbstractElevator.didCrossFloorDescending(getCurrentPosition(), getSpeed(), timeIncrement)) {
+            incrementTimeInCurrentState(timeIncrement);
+            setCurrentPosition(newPosition);
+
+            return;
+        }
+
+        //  We just crossed the a new floor!
+        //  1.  First calculate the time we crossed the floor and increment the timestamp of the elevator.
+        final double timeElapsedUntilCrossingFloors =
+                AbstractElevator.calculateElapsedTimeWhenCrossingFloorsDescending(getCurrentPosition(), getSpeed(), timeIncrement);
+
+        processStateDescendingCrossFloors(newPosition, nextFloor, timeIncrement, timeElapsedUntilCrossingFloors);
+    }
+
+    /**
+     * Simulates what an elevator would do as it crosses a floor when descending (maybe open its doors and let some passengers out?)
+     * @param newPosition
+     * @param nextFloor
+     * @param timeIncrement
+     * @param timeElapsedUntilCrossingFloors
+     */
+    protected abstract void processStateDescendingCrossFloors(final double newPosition, final double nextFloor, final double timeIncrement, final double timeElapsedUntilCrossingFloors);
+
+    /**
+     * Simulates what the elevator would do while it is waiting for passengers to enter/exit
+     * @param timeIncrement
+     */
     protected abstract void processStateLoading(final double timeIncrement);
+
+    /**
+     *  Simulates what the elevator would do if it finds itself in an idle state (maybe re-position itself?)
+     */
     protected abstract void processStateIdle(final double timeIncrement);
 
     public final List<PickupRequest> getActiveRequests() {

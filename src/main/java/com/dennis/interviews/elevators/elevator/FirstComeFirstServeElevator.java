@@ -8,22 +8,24 @@ public class FirstComeFirstServeElevator extends AbstractElevator {
     }
 
     @Override
-    protected void processStateAscending(double timeIncrement) {
-        throw new RuntimeException("Not implemented yet.");
-    }
-
-    @Override
-    protected void processStateDescending(double timeIncrement) {
-        throw new RuntimeException("Not implemented yet.");
-    }
-
-    @Override
     protected void processStateLoading(double timeIncrement) {
         throw new RuntimeException("Not implemented yet.");
     }
 
     @Override
     protected void processStateIdle(double timeIncrement) {
+        throw new RuntimeException("Not implemented yet.");
+    }
+
+    @Override
+    protected void processStateAscendingCrossFloors(double newPosition, double nextFloor, double timeIncrement,
+            double timeElapsedUntilCrossingFloors) {
+        throw new RuntimeException("Not implemented yet.");
+    }
+
+    @Override
+    protected void processStateDescendingCrossFloors(double newPosition, double nextFloor, double timeIncrement,
+            double timeElapsedUntilCrossingFloors) {
         throw new RuntimeException("Not implemented yet.");
     }
 }

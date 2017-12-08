@@ -11,47 +11,17 @@ public class OpportunisticElevator extends AbstractElevator {
         super(name);
     }
 
-    public void processStateAscending(double timeIncrement) {
-        final double distanceToTravel = timeIncrement * getSpeed();
-        final double newPosition = getCurrentPosition() + distanceToTravel;
-        final double nextFloor = Math.floor(newPosition);
-
-        //  Never crossed a floor -- no special handling needed
-        if (!AbstractElevator.didCrossFloorAscending(getCurrentPosition(), getSpeed(), timeIncrement)) {
-            incrementTimeInCurrentState(timeIncrement);
-            setCurrentPosition(newPosition);
-
-            return;
-        }
-
-        //  We just crossed the a new floor!
-        //  1.  First calculate the time we crossed the floor and increment the timestamp of the elevator.
-        final double timeElapsedUntilCrossingFloors =
-                AbstractElevator.calculateElapsedTimeWhenCrossingFloorsAscending(getCurrentPosition(), getSpeed(), timeIncrement);
+    @Override
+    public void processStateAscendingCrossFloors(final double newPosition, final double nextFloor, final double timeIncrement, final double timeElapsedUntilCrossingFloors) {
         openElevatorDoors(newPosition, nextFloor, timeIncrement, timeElapsedUntilCrossingFloors);
     }
 
-
-    public void processStateDescending(double timeIncrement) {
-        final double distanceToTravel = timeIncrement * getSpeed();
-        final double newPosition = getCurrentPosition() - distanceToTravel;
-        final double nextFloor = Math.ceil(newPosition);
-
-        //  Never crossed a floor -- no special handling needed
-        if (!AbstractElevator.didCrossFloorDescending(getCurrentPosition(), getSpeed(), timeIncrement)) {
-            incrementTimeInCurrentState(timeIncrement);
-            setCurrentPosition(newPosition);
-
-            return;
-        }
-
-        //  We just crossed the a new floor!
-        //  1.  First calculate the time we crossed the floor and increment the timestamp of the elevator.
-        final double timeElapsedUntilCrossingFloors =
-                AbstractElevator.calculateElapsedTimeWhenCrossingFloorsDescending(getCurrentPosition(), getSpeed(), timeIncrement);
+    @Override
+    public void processStateDescendingCrossFloors(final double newPosition, final double nextFloor, final double timeIncrement, final double timeElapsedUntilCrossingFloors) {
         openElevatorDoors(newPosition, nextFloor, timeIncrement, timeElapsedUntilCrossingFloors);
     }
 
+    @Override
     public void processStateLoading(double timeIncrement) {
         double newTimeInCurrentState = getTimeInCurrentState() + timeIncrement;
 
@@ -72,6 +42,7 @@ public class OpportunisticElevator extends AbstractElevator {
         incrementTime(timeAfterFinishedLoading);
     }
 
+    @Override
     public void processStateIdle(double timeIncrement) {
         incrementTimeInCurrentState(timeIncrement);
     }
